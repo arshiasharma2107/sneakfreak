@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - SneakFreak</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .cart-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .cart-item img {
+            max-width: 100px;
+        }
+        .cart-item button {
+            background-color: #ff6f61;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .cart-item button:hover {
+            background-color: #ff3e3e;
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Cart</h1>
+    <div id="cart-items"></div>
+    <div style="text-align: center;">
+        <button id="checkout">Checkout</button>
+    </div>
+
+    <script>
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+                return;
+            }
+
+            cart.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div>
+                        <h3>${item.name}</h3>
+                        <p>${item.price}</p>
+                    </div>
+                    <button class="remove" data-id="${item.id}">Remove</button>
+                `;
+                cartItemsContainer.appendChild(itemDiv);
+            });
+
+            document.querySelectorAll('.remove').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const id = parseInt(event.target.dataset.id);
+                    const index = cart.findIndex(item => item.id === id);
+                    if (index > -1) {
+                        cart.splice(index, 1);
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        renderCart();
+                    }
+                });
+            });
+        }
+
+        document.getElementById('checkout').addEventListener('click', () => {
+            alert('Proceeding to checkout!');
+            // Implement checkout functionality here
+        });
+
+        renderCart();
+    </script>
+</body>
+</html>
